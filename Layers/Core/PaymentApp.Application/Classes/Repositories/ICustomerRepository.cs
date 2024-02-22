@@ -5,5 +5,6 @@ namespace PaymentApp.Application.Classes.Repositories
 {
     public interface ICustomerRepository : IBaseRepostiory<CustomerEntity>
     {
+        Task<CustomerEntity> GetByAccountNumberAsync(string number, CancellationToken cancellationToken);
     }
 }

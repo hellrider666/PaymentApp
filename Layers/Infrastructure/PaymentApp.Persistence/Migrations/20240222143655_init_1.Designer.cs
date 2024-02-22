@@ -12,7 +12,7 @@ using PaymentApp.Persistence.Classes.Context;
 namespace PaymentApp.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240222090933_init_1")]
+    [Migration("20240222143655_init_1")]
     partial class init_1
     {
         /// <inheritdoc />

@@ -7,16 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PaymentApp.Commons\PaymentApp.Commons.csproj" />
     <ProjectReference Include="..\PaymentApp.Domain\PaymentApp.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Classes\Features\CustomerFeatures\Commands\CreateCustomer\" />
-    <Folder Include="Classes\Features\CustomerFeatures\Commands\ChangeStatus\" />
-    <Folder Include="Classes\Features\CustomerFeatures\Queries\GetCustomer\" />
-    <Folder Include="Classes\Features\TransactionFeatures\Commands\ExecuteTransaction\" />
-    <Folder Include="Classes\Features\TransactionFeatures\Queries\GetTransaction\" />
-    <Folder Include="Classes\Features\TransactionFeatures\Queries\GetAllTransactions\" />
   </ItemGroup>
 
   <ItemGroup>

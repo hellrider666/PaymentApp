@@ -25,7 +25,7 @@ namespace PaymentApp.PaymentApi.Classes.Filters
 
             if (string.IsNullOrEmpty(currentApiKey))
             {               
-                _logger.Write($"Значение ключа API не указано в конфиг файле");
+                //_logger.Write($"Значение ключа API не указано в конфиг файле");
 
                 throw new ArgumentException("The server is unavailable due to a secure connection");
             }

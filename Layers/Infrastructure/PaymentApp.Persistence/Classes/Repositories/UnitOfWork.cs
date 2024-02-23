@@ -38,9 +38,51 @@ namespace PaymentApp.Persistence.Classes.Repositories
             GC.SuppressFinalize(this);
         }
 
-        public async Task<int> SaveChangesAsync()
+        private async Task<int> SaveChangesAsync()
         {
             return await _DbContext.SaveChangesAsync();
+        }
+
+        public async Task<T> BeginTransaction<T>(Func<Task<T>> func)
+        {
+            using (var transaction = _DbContext.BeginTransaction())
+            {
+                try
+                {
+                    var result = await func();
+
+                    await SaveChangesAsync();
+                    transaction.Commit();
+
+                    return result;
+                }
+                catch (Exception exc)
+                {
+                    transaction.Rollback();
+                    throw new Exception();
+                }
+            }
+        }
+
+        public async Task<T> BeginTransaction<T>(Func<T> func)
+        {
+            using (var transaction = _DbContext.BeginTransaction())
+            {
+                try
+                {
+                    var result = func();
+
+                    await SaveChangesAsync();
+                    transaction.Commit();
+
+                    return result;
+                }
+                catch (Exception exc)
+                {
+                    transaction.Rollback();
+                    throw new Exception();
+                }
+            }
         }
     }
 }

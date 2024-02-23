@@ -5,8 +5,8 @@ using System.Net;
 
 namespace PaymentApp.PaymentApi.Controllers.Base
 {
-    [ApiController]
     [Route("api/[controller]/[action]")]
+    [ApiController]    
     [ProducesErrorResponseType(typeof(ValidationResponse))]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]

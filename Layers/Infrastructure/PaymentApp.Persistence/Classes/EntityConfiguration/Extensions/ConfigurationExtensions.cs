@@ -12,11 +12,6 @@ namespace PaymentApp.Persistence.Classes.EntityConfiguration.Extensions
             return index.HasDatabaseName(string.Format("{0}_{1}_Unique_Index", tableName, columnName)).IsUnique();
         }
 
-        public static PropertyBuilder<Enum> HasEnumToString<Enum>(this PropertyBuilder<Enum> builder)
-        {
-            return builder.HasConversion<string>();
-        }
-
         public static PropertyBuilder<decimal> AsDecimal(this PropertyBuilder<decimal> builder)
         {
             return builder.HasColumnType(DecimalFormat);

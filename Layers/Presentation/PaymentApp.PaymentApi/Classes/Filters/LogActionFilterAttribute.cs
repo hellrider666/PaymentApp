@@ -28,8 +28,8 @@ namespace PaymentApp.PaymentApi.Classes.Filters
             var message = $"Вызвано действие: {context.HttpContext.Request.Path}" +
                           (parameters == null || parameters.Count == 0 ? string.Empty : $" с параметрами: {GetParameters(parameters)}");
 
-            //_logger.Write(message);
-             
+            _logger.Write(message);
+
             base.OnActionExecuting(context);
         }
 
@@ -37,7 +37,7 @@ namespace PaymentApp.PaymentApi.Classes.Filters
         {
             if (context.Exception != null)
             {
-                //_logger.Write($"Получена ошибка: {context.Exception.GetType().Name} Сообщение: {context.Exception.Message}");
+                _logger.Write($"Получена ошибка: {context.Exception.GetType().Name} Сообщение: {context.Exception.Message}");
             }
             else
             {
@@ -54,7 +54,7 @@ namespace PaymentApp.PaymentApi.Classes.Filters
                     }
                 }
 
-                //_logger.Write(message);
+                _logger.Write(message);
             }
 
             base.OnActionExecuted(context);

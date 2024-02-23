@@ -39,11 +39,6 @@ namespace PaymentApp.Persistence.Classes.EntityConfiguration
                 .IsRequired();
 
             builder
-                .Property(x => x.TransactionType)
-                .HasEnumToString()
-                .IsRequired();
-
-            builder
                 .Property(x => x.Sum)
                 .AsDecimal()
                 .IsRequired();

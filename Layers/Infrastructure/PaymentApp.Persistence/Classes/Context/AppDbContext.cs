@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using PaymentApp.Domain.Entities;
 using PaymentApp.Domain.Entities.Base;
 using PaymentApp.Persistence.Classes.EntityConfiguration;
@@ -38,6 +39,10 @@ namespace PaymentApp.Persistence.Classes.Context
             return base.Set<T>();
         }
 
+        public IDbContextTransaction BeginTransaction()
+        {
+            return base.Database.BeginTransaction();
+        }
         public async Task<int> SaveChangesAsync()
         {
             return await base.SaveChangesAsync();

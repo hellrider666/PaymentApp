@@ -12,7 +12,7 @@ using PaymentApp.Persistence.Classes.Context;
 namespace PaymentApp.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240222143655_init_1")]
+    [Migration("20240223051157_init_1")]
     partial class init_1
     {
         /// <inheritdoc />
@@ -82,10 +82,6 @@ namespace PaymentApp.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("TransactionType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

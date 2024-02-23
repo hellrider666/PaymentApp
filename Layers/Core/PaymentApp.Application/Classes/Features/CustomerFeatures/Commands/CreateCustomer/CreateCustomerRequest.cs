@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace PaymentApp.Application.Classes.Features.CustomerFeatures.CreateCustomer
+namespace PaymentApp.Application.Classes.Features.CustomerFeatures.Commands.CreateCustomer
 {
     public class CreateCustomerRequest : IRequest<CreateCustomerResponse>
     {

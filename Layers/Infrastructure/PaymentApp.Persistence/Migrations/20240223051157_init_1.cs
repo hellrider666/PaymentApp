@@ -36,7 +36,6 @@ namespace PaymentApp.Persistence.Migrations
                     SenderCustomerId = table.Column<decimal>(type: "decimal(20,0)", nullable: false),
                     RecipientCustomerId = table.Column<decimal>(type: "decimal(20,0)", nullable: false),
                     TransactionNumber = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    TransactionType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ExecutingDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Sum = table.Column<decimal>(type: "DECIMAL(18,2)", nullable: false)
                 },

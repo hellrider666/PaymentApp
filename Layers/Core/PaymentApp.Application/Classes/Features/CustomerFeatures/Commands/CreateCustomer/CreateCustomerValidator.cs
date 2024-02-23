@@ -2,7 +2,7 @@
 using PaymentApp.Application.Classes.Repositories;
 using PaymentApp.Commons.Classes.Helpers.CommonObject;
 
-namespace PaymentApp.Application.Classes.Features.CustomerFeatures.CreateCustomer
+namespace PaymentApp.Application.Classes.Features.CustomerFeatures.Commands.CreateCustomer
 {
     public class CreateCustomerValidator : AbstractValidator<CreateCustomerRequest>
     {
@@ -22,23 +22,22 @@ namespace PaymentApp.Application.Classes.Features.CustomerFeatures.CreateCustome
 
             RuleFor(x => x.AccountNumber)
                 .NotNull()
-                    .WithMessage("Номер карты не может быть пустой")
+                    .WithMessage("Номер карты не может быть пустым")
                 .Length(16)
                     .WithMessage("Длина номера карты должна быть 16 цифр")
                 .Must((number) =>
                 {
                     return number.IsDigit();
                 })
-                    .WithMessage("Номер карты должен содержать только целые цефры")
+                    .WithMessage("Номер карты должен содержать только целые цифры")
                 .MustAsync(async (number, cancellation) =>
                 {
                     var exist = await _unitOfWork.CustomerRepository.GetByAccountNumberAsync(number, cancellation);
 
                     return exist == null;
                 })
-                    .WithMessage("Пользователь с таким номер карты уже существует");
+                    .WithMessage("Счет с таким номер карты уже существует");
 
         }
     }
 }
-          

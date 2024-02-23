@@ -59,7 +59,7 @@ namespace PaymentApp.Persistence.Classes.Repositories
                 catch (Exception exc)
                 {
                     transaction.Rollback();
-                    throw new Exception();
+                    throw new Exception(exc.Message);
                 }
             }
         }
@@ -80,7 +80,7 @@ namespace PaymentApp.Persistence.Classes.Repositories
                 catch (Exception exc)
                 {
                     transaction.Rollback();
-                    throw new Exception();
+                    throw new Exception(exc.Message);
                 }
             }
         }

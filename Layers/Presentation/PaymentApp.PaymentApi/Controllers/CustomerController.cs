@@ -1,9 +1,9 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PaymentApp.Application.Classes.Features.CustomerFeatures.Commands.ChangeStatus;
 using PaymentApp.Application.Classes.Features.CustomerFeatures.Commands.CreateCustomer;
 using PaymentApp.Application.Classes.Features.CustomerFeatures.Commands.ReplenishmentBalance;
 using PaymentApp.Application.Classes.Features.CustomerFeatures.Queries.GetCustomerByNumber;
+using PaymentApp.Application.Classes.Managers.Request;
 using PaymentApp.PaymentApi.Controllers.Base;
 using System.Net;
 
@@ -11,7 +11,7 @@ namespace PaymentApp.PaymentApi.Controllers
 {
     public class CustomerController : BaseApiController
     {
-        public CustomerController(IMediator mediator) : base(mediator) { }
+        public CustomerController(IRequestManager requestManager) : base(requestManager) { }
 
         [HttpPost(Name = "CreateCustomer"), ProducesResponseType(typeof(CreateCustomerResponse), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> CreateCustomer([FromHeader]string API_KEY, [FromBody]CreateCustomerRequest request)

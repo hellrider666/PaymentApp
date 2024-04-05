@@ -1,7 +1,7 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PaymentApp.Application.Classes.Features.TransactionFeatures.Commands.ExecuteTransaction;
 using PaymentApp.Application.Classes.Features.TransactionFeatures.Queries.GetTransactions;
+using PaymentApp.Application.Classes.Managers.Request;
 using PaymentApp.PaymentApi.Controllers.Base;
 using System.Net;
 
@@ -9,7 +9,7 @@ namespace PaymentApp.PaymentApi.Controllers
 {
     public class TransactionController : BaseApiController
     {
-        public TransactionController(IMediator mediator) : base(mediator) { }
+        public TransactionController(IRequestManager requestManager) : base(requestManager) { }
 
         [HttpPost(Name = "ExecuteTransaction"), ProducesResponseType(typeof(ExecuteTransactionResponse), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> ExecuteTransaction([FromHeader] string API_KEY, [FromBody] ExecuteTransactionRequest request)

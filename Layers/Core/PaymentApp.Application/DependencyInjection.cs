@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using PaymentApp.Application.Classes.Behaviors;
+using PaymentApp.Application.Classes.Managers.Request;
 using PaymentApp.Application.Classes.Mapping;
 using System.Reflection;
 
@@ -22,6 +23,8 @@ namespace PaymentApp.Application
             services
                 .AddValidatorsFromAssemblies(new[] { Assembly.GetExecutingAssembly() });
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBihavior<,>));
+
+            services.AddScoped<IRequestManager, RequestManager>();
 
             return services;
         }

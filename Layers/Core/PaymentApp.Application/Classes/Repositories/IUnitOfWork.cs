@@ -1,10 +1,26 @@
-﻿namespace PaymentApp.Application.Classes.Repositories
+﻿using PaymentApp.Application.Classes.Repositories.Base;
+using PaymentApp.Domain.Entities.Base;
+
+namespace PaymentApp.Application.Classes.Repositories
 {
     public interface IUnitOfWork : IDisposable
     {
-        public ICustomerRepository CustomerRepository { get; }
-        public ITransactionRepository TransactionRepository { get; }
-        public Task<T> BeginTransaction<T>(Func<Task<T>> func);
-        public Task<T> BeginTransaction<T>(Func<T> func);
+        Task<TResult> DoWork<TRepository, TEntity, TResult>(Func<TRepository, Task<TResult>> action)
+            where TRepository : class, IBaseRepostiory<TEntity>
+            where TEntity : BaseEntity;
+
+        Task<TResult> DoWork<TRepository, TEntity, TResult>(Func<TRepository, TResult> action)
+            where TRepository : class, IBaseRepostiory<TEntity>
+            where TEntity : BaseEntity;
+
+        Task DoWork<TRepository, TEntity>(Func<TRepository, Task> action)
+            where TRepository : class, IBaseRepostiory<TEntity>
+            where TEntity : BaseEntity;
+
+        void DoWork<TRepository, TEntity>(Action<TRepository> action)
+            where TRepository : class, IBaseRepostiory<TEntity>
+            where TEntity : BaseEntity;
+
+        void DoWork(Action action);
     }
 }

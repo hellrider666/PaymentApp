@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using PaymentApp.Application.Classes.Repositories;
 using PaymentApp.Commons.Classes.Helpers.CommonObject;
+using PaymentApp.Domain.Entities;
 
 namespace PaymentApp.Application.Classes.Features.CustomerFeatures.Commands.CreateCustomer
 {
@@ -32,9 +33,10 @@ namespace PaymentApp.Application.Classes.Features.CustomerFeatures.Commands.Crea
                     .WithMessage("Номер карты должен содержать только целые цифры")
                 .MustAsync(async (number, cancellation) =>
                 {
-                    var exist = await _unitOfWork.CustomerRepository.GetByAccountNumberAsync(number, cancellation);
+                       var exist = await _unitOfWork.DoWork<ICustomerRepository, CustomerEntity, CustomerEntity>(rep => rep.GetByAccountNumberAsync(number, cancellation));
 
-                    return exist == null;
+                       return exist == null;
+                   
                 })
                     .WithMessage("Счет с таким номер карты уже существует");
 

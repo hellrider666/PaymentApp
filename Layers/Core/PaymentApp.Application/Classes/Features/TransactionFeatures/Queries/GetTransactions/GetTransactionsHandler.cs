@@ -13,11 +13,17 @@ namespace PaymentApp.Application.Classes.Features.TransactionFeatures.Queries.Ge
 
         public async Task<GetTransactionsResponse> Handle(GetTransactionsRequest request, CancellationToken cancellationToken)
         {
-            var transaction = 
-                await _unitOfWork.TransactionRepository
-                .GetByFilterCriteriasAsync(cancellationToken, request.SenderNumber, request.RecipientNumber, request.TransactionNumber, request.StartDateTime, request.EndDateTime);
+            return await Execute(async unitOfWork =>
+            {
+                var transaction = await unitOfWork.DoWork<ITransactionRepository, TransactionEntity, List<TransactionEntity>>
+                (
+                    x => x.GetByFilterCriteriasAsync
+                        (cancellationToken, request.SenderNumber, request.RecipientNumber, request.TransactionNumber, request.StartDateTime, request.EndDateTime)
+                );
 
-            return new GetTransactionsResponse { Transactions = _mapper.Map<List<TransactionEntity>, List<TransactionDTO>>(transaction) };
+                return new GetTransactionsResponse { Transactions = _mapper.Map<List<TransactionEntity>, List<TransactionDTO>>(transaction) };
+            });
+          
         }
     }
 }

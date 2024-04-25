@@ -2,6 +2,7 @@
 using MediatR;
 using PaymentApp.Application.Classes.Abstract;
 using PaymentApp.Application.Classes.Repositories;
+using PaymentApp.Domain.Entities;
 
 namespace PaymentApp.Application.Classes.Features.CustomerFeatures.Commands.ChangeStatus
 {
@@ -11,15 +12,20 @@ namespace PaymentApp.Application.Classes.Features.CustomerFeatures.Commands.Chan
 
         public async Task<ChangeStatusResponse> Handle(ChangeStatusRequest request, CancellationToken cancellationToken)
         {
-            return await _unitOfWork.BeginTransaction(async () => 
+            return await Execute(async unitOfWork =>
             {
-                var customer = await _unitOfWork.CustomerRepository.GetByAccountNumberAsync(request.AccountNumber, cancellationToken);
+                var customer = await unitOfWork.DoWork<ICustomerRepository, CustomerEntity, CustomerEntity>
+                (
+                    rep => rep.GetByAccountNumberAsync(request.AccountNumber, cancellationToken)
+                );
 
-                customer.IsActive = request.IsActive;
-                _unitOfWork.CustomerRepository.Update(customer);
+                 unitOfWork.DoWork(() =>
+                {
+                    customer.IsActive = request.IsActive;
+                });
 
                 return new ChangeStatusResponse { Successful = true };
-            });           
+            });
         }
     }
 }

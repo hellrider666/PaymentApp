@@ -1,8 +1,9 @@
 ﻿using MediatR;
+using PaymentApp.Application.Classes.Abstract.Interfaces;
 
 namespace PaymentApp.Application.Classes.Features.TransactionFeatures.Commands.ExecuteTransaction
 {
-    public class ExecuteTransactionRequest : IRequest<ExecuteTransactionResponse>
+    public class ExecuteTransactionRequest : IAppRequest<ExecuteTransactionResponse>
     {
         public string SenderNumber { get; set; }
         public string RecipientNumber { get; set; }

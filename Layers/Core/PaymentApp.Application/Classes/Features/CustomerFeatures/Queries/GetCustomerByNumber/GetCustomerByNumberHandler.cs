@@ -13,9 +13,15 @@ namespace PaymentApp.Application.Classes.Features.CustomerFeatures.Queries.GetCu
 
         public async Task<GetCustomerByNumberResponse> Handle(GetCustomerByNumberRequest request, CancellationToken cancellationToken)
         {
-            var customer = await _unitOfWork.CustomerRepository.GetByAccountNumberAsync(request.AccountNumber, cancellationToken);
+            return await Execute(async unitOfWork =>
+            {
+                var customer = await unitOfWork.DoWork<ICustomerRepository, CustomerEntity, CustomerEntity>(async rep =>
+                {
+                    return await rep.GetByAccountNumberAsync(request.AccountNumber, cancellationToken);
+                });
 
-            return new GetCustomerByNumberResponse { Customer = _mapper.Map<CustomerEntity, CustomerDTO>(customer) };
+                return new GetCustomerByNumberResponse { Customer = _mapper.Map<CustomerEntity, CustomerDTO>(customer) };
+            });
         }
     }
 }

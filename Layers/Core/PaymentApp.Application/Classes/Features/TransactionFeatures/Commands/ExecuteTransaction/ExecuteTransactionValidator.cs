@@ -1,6 +1,8 @@
 ﻿using FluentValidation;
 using PaymentApp.Application.Classes.Repositories;
 using PaymentApp.Commons.Classes.Helpers.CommonObject;
+using PaymentApp.Domain.Entities;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PaymentApp.Application.Classes.Features.TransactionFeatures.Commands.ExecuteTransaction
 {
@@ -26,16 +28,16 @@ namespace PaymentApp.Application.Classes.Features.TransactionFeatures.Commands.E
                     .WithMessage("Номер карты отправителя должен содержать только целые цифры")
                 .MustAsync(async (number, cancellation) =>
                 {
-                    var exist = await _unitOfWork.CustomerRepository.GetByAccountNumberAsync(number, cancellation);
+                    var exist = await unitOfWork.DoWork<ICustomerRepository, CustomerEntity, CustomerEntity>(rep => rep.GetByAccountNumberAsync(number, cancellation));
 
                     return exist != null;
                 })
                     .WithMessage("Отправителя с таким номер карты не существует")
                 .MustAsync(async (number, cancellation) =>
                 {
-                    var customer = await _unitOfWork.CustomerRepository.GetByAccountNumberAsync(number, cancellation);
+                    var exist = await unitOfWork.DoWork<ICustomerRepository, CustomerEntity, CustomerEntity>(rep => rep.GetByAccountNumberAsync(number, cancellation));
 
-                    return customer.IsActive;
+                    return exist.IsActive;           
                 })
                     .WithMessage("Счет отправителя заблокирован");
 
@@ -51,16 +53,16 @@ namespace PaymentApp.Application.Classes.Features.TransactionFeatures.Commands.E
                     .WithMessage("Номер карты получателя должен содержать только целые цифры")
                 .MustAsync(async (number, cancellation) =>
                 {
-                    var exist = await _unitOfWork.CustomerRepository.GetByAccountNumberAsync(number, cancellation);
+                    var exist = await unitOfWork.DoWork<ICustomerRepository, CustomerEntity, CustomerEntity>(rep => rep.GetByAccountNumberAsync(number, cancellation));
 
                     return exist != null;
                 })
                     .WithMessage("Получателя с таким номер карты не существует")
                 .MustAsync(async (number, cancellation) =>
                 {
-                    var customer = await _unitOfWork.CustomerRepository.GetByAccountNumberAsync(number, cancellation);
+                    var exist = await unitOfWork.DoWork<ICustomerRepository, CustomerEntity, CustomerEntity>(rep => rep.GetByAccountNumberAsync(number, cancellation));
 
-                    return customer.IsActive;
+                    return exist.IsActive;
                 })
                     .WithMessage("Счет получателя заблокирован");
 
@@ -84,7 +86,7 @@ namespace PaymentApp.Application.Classes.Features.TransactionFeatures.Commands.E
                     .WithMessage("Номер транзакции должен содержать только целочисленные символы")
                 .MustAsync(async (number, cancellation) =>
                 {
-                    var exist = await _unitOfWork.TransactionRepository.GetByTransactionNumber(number, cancellation);
+                    var exist = await _unitOfWork.DoWork<ITransactionRepository, TransactionEntity, TransactionEntity>(rep => rep.GetByTransactionNumber(number, cancellation));
 
                     return exist == null;
                 })
@@ -100,9 +102,12 @@ namespace PaymentApp.Application.Classes.Features.TransactionFeatures.Commands.E
                     .WithMessage("Сумма не может содержать больше 2-х знаков после запятой")
                 .MustAsync(async (request, sum, cancellation) =>
                 {
-                    var customer = await _unitOfWork.CustomerRepository.GetByAccountNumberAsync(request.SenderNumber, cancellation);
+                    var exist = await unitOfWork.DoWork<ICustomerRepository, CustomerEntity, CustomerEntity>
+                        (rep 
+                            => rep.GetByAccountNumberAsync(request.SenderNumber, cancellation)
+                        );
 
-                    return customer.Balance >= sum;
+                    return exist.Balance >= sum;
                 })
                 .WithMessage("На балансе отправителя недостаточно средств");
         }

@@ -1,8 +1,9 @@
 ﻿using MediatR;
+using PaymentApp.Application.Classes.Abstract.Interfaces;
 
 namespace PaymentApp.Application.Classes.Features.TransactionFeatures.Queries.GetTransactions
 {
-    public class GetTransactionsRequest : IRequest<GetTransactionsResponse>
+    public class GetTransactionsRequest : IAppRequest<GetTransactionsResponse>
     {
         public string? SenderNumber { get; set; }
         public string? RecipientNumber { get; set; }

@@ -24,11 +24,6 @@ namespace PaymentApp.Persistence.Classes.Context
             optionsBuilder.EnableDetailedErrors();
         }
 
-        public void AddEntity<T>(T entity) where T : BaseEntity
-        {
-            base.Add(entity);
-        }
-
         public void DisposeContext()
         {
             base.Dispose();
@@ -39,13 +34,24 @@ namespace PaymentApp.Persistence.Classes.Context
             return base.Set<T>();
         }
 
-        public IDbContextTransaction BeginTransaction()
-        {
-            return base.Database.BeginTransaction();
-        }
         public async Task<int> SaveChangesAsync()
         {
             return await base.SaveChangesAsync();
+        }
+
+        public int SaveChangesSync()
+        {
+            return base.SaveChanges();
+        }
+
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
+        {
+            return await base.Database.BeginTransactionAsync();
+        }
+
+        public IDbContextTransaction BeginTransaction()
+        {
+            return base.Database.BeginTransaction();
         }
     }
 }

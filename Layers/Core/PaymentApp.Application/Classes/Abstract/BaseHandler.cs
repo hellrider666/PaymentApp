@@ -5,7 +5,7 @@ namespace PaymentApp.Application.Classes.Abstract
 {
     public abstract class BaseHandler
     {
-        protected readonly IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
         protected readonly IMapper _mapper;
 
         public BaseHandler(IUnitOfWork unitOfWork, IMapper mapper)
@@ -13,6 +13,21 @@ namespace PaymentApp.Application.Classes.Abstract
             _unitOfWork = unitOfWork;
 
             _mapper = mapper;
+        }
+
+        protected async Task<TResult> Execute<TResult>(Func<IUnitOfWork, Task<TResult>> action)
+        {
+             return await action(_unitOfWork);
+        }
+
+        protected TResult Execute<TResult>(Func<IUnitOfWork, TResult> action)
+        {
+             return action(_unitOfWork);
+        }
+
+        protected void Execute(Action<IUnitOfWork> action) 
+        {
+             action(_unitOfWork);
         }
     }
 }

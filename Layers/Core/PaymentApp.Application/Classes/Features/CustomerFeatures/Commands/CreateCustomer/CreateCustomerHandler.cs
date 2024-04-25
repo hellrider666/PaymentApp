@@ -12,9 +12,9 @@ namespace PaymentApp.Application.Classes.Features.CustomerFeatures.Commands.Crea
 
         public async Task<CreateCustomerResponse> Handle(CreateCustomerRequest request, CancellationToken cancellationToken)
         {
-            return await _unitOfWork.BeginTransaction(() =>
+            return Execute(unitOfWork =>
             {
-                var customer = new CustomerEntity
+                var user = new CustomerEntity
                 {
                     Name = request.Name,
                     AccountNumber = request.AccountNumber,
@@ -22,10 +22,13 @@ namespace PaymentApp.Application.Classes.Features.CustomerFeatures.Commands.Crea
                     IsActive = true
                 };
 
-                _unitOfWork.CustomerRepository.Create(customer);
+                unitOfWork.DoWork<ICustomerRepository, CustomerEntity>(rep =>
+                {
+                    rep.Create(user);
+                });
 
                 return new CreateCustomerResponse { Successful = true };
-            });         
-        }
+            });      
+       }
     }
 }

@@ -22,10 +22,10 @@ namespace PaymentApp.Persistence
 
         private static IServiceCollection InjectRepositories(this IServiceCollection services)
         {
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
 
-            services.AddScoped<ICustomerRepository, CustomerRepository>();
-            services.AddScoped<ITransactionRepository, TransactionRepository>();
+            services.AddTransient<ICustomerRepository, CustomerRepository>();
+            services.AddTransient<ITransactionRepository, TransactionRepository>();
 
             return services;
         }

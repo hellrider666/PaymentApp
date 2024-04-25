@@ -2,6 +2,7 @@
 using MediatR;
 using PaymentApp.Application.Classes.Abstract;
 using PaymentApp.Application.Classes.Repositories;
+using PaymentApp.Domain.Entities;
 
 namespace PaymentApp.Application.Classes.Features.CustomerFeatures.Commands.ReplenishmentBalance
 {
@@ -11,11 +12,17 @@ namespace PaymentApp.Application.Classes.Features.CustomerFeatures.Commands.Repl
 
         public async Task<ReplenishmentBalanceResponse> Handle(ReplenishmentBalanceRequest request, CancellationToken cancellationToken)
         {
-            return await _unitOfWork.BeginTransaction(async () =>
+            return await Execute(async unitOfWork =>
             {
-                var customer = await _unitOfWork.CustomerRepository.GetByAccountNumberAsync(request.AccountNumber, cancellationToken);
+                var customer = await unitOfWork.DoWork<ICustomerRepository, CustomerEntity, CustomerEntity>
+                (
+                     x => x.GetByAccountNumberAsync(request.AccountNumber, cancellationToken)
+                );
 
-                customer.Balance += request.Sum;
+                unitOfWork.DoWork(() =>
+                {
+                    customer.Balance += request.Sum;
+                });
 
                 return new ReplenishmentBalanceResponse { Successful = true };
             });

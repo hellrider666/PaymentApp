@@ -1,5 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using PaymentApp.Application.Classes.Abstract.Interfaces;
+using PaymentApp.Application.Classes.Managers.Request;
 using PaymentApp.PaymentApi.Classes.Responses;
 using System.Net;
 
@@ -13,16 +15,16 @@ namespace PaymentApp.PaymentApi.Controllers.Base
     [ProducesResponseType((int)HttpStatusCode.ServiceUnavailable)]
     public class BaseApiController : ControllerBase
     {
-        private readonly IMediator _mediator;
+        private readonly IRequestManager _requestManager;
 
-        public BaseApiController(IMediator mediator)
+        public BaseApiController(IRequestManager requestManager)
         {
-            _mediator = mediator;
+            _requestManager = requestManager;
         }
 
-        protected async Task<IActionResult> Execute<TRequest, TResponse>(IRequest<TResponse> request)
+        protected async Task<IActionResult> Execute<TRequest, TResponse>(IAppRequest<TResponse> request)
         {
-            var response = await _mediator.Send(request);
+            var response = await _requestManager.Send(request);
 
             return Ok(response);
         }

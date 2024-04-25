@@ -12,28 +12,40 @@ namespace PaymentApp.Application.Classes.Features.TransactionFeatures.Commands.E
 
         public async Task<ExecuteTransactionResponse> Handle(ExecuteTransactionRequest request, CancellationToken cancellationToken)
         {
-            return await _unitOfWork.BeginTransaction(async () =>
+            return await Execute(async unitOfWork =>
             {
-                var sender = await _unitOfWork.CustomerRepository.GetByAccountNumberAsync(request.SenderNumber, cancellationToken);
-
-                var Recipient = await _unitOfWork.CustomerRepository.GetByAccountNumberAsync(request.RecipientNumber, cancellationToken);
-
-                sender.Balance -= request.Sum;
-                Recipient.Balance += request.Sum;
-
-                var transaction = new TransactionEntity
+                var sender = await unitOfWork.DoWork<ICustomerRepository, CustomerEntity, CustomerEntity>(async rep =>
                 {
-                    SenderCustomer = sender,
-                    RecipientCustomer = Recipient,
-                    TransactionNumber = request.TransactionNumber,
-                    Sum = request.Sum,
-                    ExecutingDateTime = DateTime.Now
-                };
+                    return await rep.GetByAccountNumberAsync(request.SenderNumber, cancellationToken);
+                });
 
-                _unitOfWork.TransactionRepository.Create(transaction);
+                var recipient = await unitOfWork.DoWork<ICustomerRepository, CustomerEntity, CustomerEntity>(async rep =>
+                {
+                    return await rep.GetByAccountNumberAsync(request.RecipientNumber, cancellationToken);
+                });
+
+                unitOfWork.DoWork(() =>
+                {
+                    sender.Balance -= request.Sum;
+                    recipient.Balance += request.Sum;
+                });
+
+                unitOfWork.DoWork<ITransactionRepository, TransactionEntity>(rep =>
+                {
+                    var transaction = new TransactionEntity
+                    {
+                        SenderCustomer = sender,
+                        RecipientCustomer = recipient,
+                        TransactionNumber = request.TransactionNumber,
+                        Sum = request.Sum,
+                        ExecutingDateTime = DateTime.Now
+                    };
+
+                    rep.Create(transaction);
+                });
 
                 return new ExecuteTransactionResponse { Successful = true };
-            });
+            });           
         }
     }
 }

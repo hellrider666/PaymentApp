@@ -15,7 +15,7 @@ namespace PaymentApp.Persistence.Classes.Repositories.Base
         }
         public void Create(T entity)
         {
-            _DbContext.AddEntity(entity);
+            _DbContext.GetDbSet<T>().Add(entity);
         }
 
         public void Delete(T entity)

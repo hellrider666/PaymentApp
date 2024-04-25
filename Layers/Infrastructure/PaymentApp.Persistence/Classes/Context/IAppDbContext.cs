@@ -10,8 +10,9 @@ namespace PaymentApp.Persistence.Classes.Context
         DbSet<CustomerEntity> CustomerEntities { get; }
         DbSet<TransactionEntity> TransactionEntities { get; }
         DbSet<T> GetDbSet<T>() where T : BaseEntity;
-        void AddEntity<T>(T entity) where T : BaseEntity;
         Task<int> SaveChangesAsync();
+        int SaveChangesSync();
+        Task<IDbContextTransaction> BeginTransactionAsync();
         IDbContextTransaction BeginTransaction();
         void DisposeContext();
     }

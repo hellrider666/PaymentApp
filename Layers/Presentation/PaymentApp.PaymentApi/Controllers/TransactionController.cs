@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PaymentApp.Application.Classes.Features.TransactionFeatures.Commands.ExecuteTransaction;
 using PaymentApp.Application.Classes.Features.TransactionFeatures.Queries.GetTransactions;
 using PaymentApp.Application.Classes.Managers.Request;

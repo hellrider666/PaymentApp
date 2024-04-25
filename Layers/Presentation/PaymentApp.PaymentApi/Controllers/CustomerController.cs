@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PaymentApp.Application.Classes.Features.CustomerFeatures.Commands.ChangeStatus;
 using PaymentApp.Application.Classes.Features.CustomerFeatures.Commands.CreateCustomer;
 using PaymentApp.Application.Classes.Features.CustomerFeatures.Commands.ReplenishmentBalance;

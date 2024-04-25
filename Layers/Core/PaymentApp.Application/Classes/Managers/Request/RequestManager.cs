@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
-using PaymentApp.Application.Classes.Interfaces;
+using PaymentApp.Application.Classes.Abstract.Interfaces;
 
 namespace PaymentApp.Application.Classes.Managers.Request
 {

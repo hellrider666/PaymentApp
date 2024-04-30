@@ -17,17 +17,28 @@ namespace PaymentApp.Application.Classes.Abstract
 
         protected async Task<TResult> Execute<TResult>(Func<IUnitOfWork, Task<TResult>> action)
         {
-             return await action(_unitOfWork);
+            return await _unitOfWork.BeginTransactionAsync(async () =>
+            {
+                return await action(_unitOfWork);
+            });
+             
         }
 
         protected TResult Execute<TResult>(Func<IUnitOfWork, TResult> action)
         {
-             return action(_unitOfWork);
+            return _unitOfWork.BeginTransactionSync(() =>
+            {
+                return action(_unitOfWork);
+            });
         }
 
         protected void Execute(Action<IUnitOfWork> action) 
         {
-             action(_unitOfWork);
+            _unitOfWork.BeginTransactionSync(() =>
+            {
+                action(_unitOfWork);
+            });
+             
         }
     }
 }

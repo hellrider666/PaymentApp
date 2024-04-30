@@ -44,77 +44,7 @@ namespace PaymentApp.Persistence.Classes.Repositories
                 if (repositoryInstance == null)
                     throw new Exception($"Служба {nameof(repositoryInstance)} не зарегистрирована");
 
-                return await BeginTransactionAsync(async () =>
-                {
-                    return await action(repositoryInstance);
-                });
-            }
-            catch
-            {
-                throw;
-            }
-        }
-        public async Task<TResult> DoWork<TRepository, TEntity, TResult>(Func<TRepository, TResult> action)
-            where TRepository : class, IBaseRepostiory<TEntity>
-            where TEntity : BaseEntity
-        {
-            try
-            {
-                var repositoryInstance = _serviceProvider.GetService<TRepository>();
-
-                if (repositoryInstance == null)
-                    throw new Exception($"Служба {nameof(repositoryInstance)} не зарегистрирована");
-
-                return await BeginTransactionAsync(() =>
-                {
-                    return action(repositoryInstance);
-
-                });
-            }
-            catch
-            {
-                throw;
-            }
-        }
-
-        public async Task DoWork<TRepository, TEntity>(Func<TRepository> action)
-            where TRepository : class, IBaseRepostiory<TEntity>
-            where TEntity : BaseEntity
-        {
-            try
-            {
-                var repositoryInstance = _serviceProvider.GetService<TRepository>();
-
-                if (repositoryInstance == null)
-                    throw new Exception($"Служба {nameof(repositoryInstance)} не зарегистрирована");
-
-                await BeginTransactionAsync(() =>
-                {
-                    action();
-                });
-            }
-            catch
-            {
-                throw;
-            }
-        }
-
-        public async Task DoWork<TRepository, TEntity>(Func<TRepository, Task> action)
-            where TRepository : class, IBaseRepostiory<TEntity>
-            where TEntity : BaseEntity
-        {
-            try
-            {
-                var repositoryInstance = _serviceProvider.GetService<TRepository>();
-
-                if (repositoryInstance == null)
-                    throw new Exception($"Служба {nameof(repositoryInstance)} не зарегистрирована");
-
-                await BeginTransactionAsync(async () =>
-                {
-                    await action(repositoryInstance);
-                });
-
+                return await action(repositoryInstance);
             }
             catch
             {
@@ -133,10 +63,7 @@ namespace PaymentApp.Persistence.Classes.Repositories
                 if (repositoryInstance == null)
                     throw new Exception($"Служба {nameof(repositoryInstance)} не зарегистрирована");
 
-                BeginTransactionSync(() =>
-                    {
-                        action(repositoryInstance);
-                    });
+                action(repositoryInstance);
             }
             catch
             {
@@ -148,10 +75,7 @@ namespace PaymentApp.Persistence.Classes.Repositories
         {
             try
             {
-                BeginTransactionSync(() =>
-                {
-                    action();
-                });
+                 action();
             }
             catch
             {
@@ -163,28 +87,7 @@ namespace PaymentApp.Persistence.Classes.Repositories
 
         #region TRANSACTIONS METHODS
 
-        private async Task<T> BeginTransactionAsync<T>(Func<T> action)
-        {
-            using (var transaction = await _DbContext.BeginTransactionAsync())
-            {
-                try
-                {
-                    var result = action();
-
-                    await SaveChangesAsync();
-                    await transaction.CommitAsync();
-
-                    return result;
-                }
-                catch
-                {
-                    await transaction.RollbackAsync();
-                    throw;
-                }
-            }
-        }
-
-        private async Task<T> BeginTransactionAsync<T>(Func<Task<T>> action)
+        public async Task<T> BeginTransactionAsync<T>(Func<Task<T>> action)
         {
             using (var transaction = await _DbContext.BeginTransactionAsync())
             {
@@ -205,26 +108,27 @@ namespace PaymentApp.Persistence.Classes.Repositories
             }
         }
 
-        private async Task BeginTransactionAsync(Action action)
+        public TResult BeginTransactionSync<TResult>(Func<TResult> action)
         {
-            using (var transaction = await _DbContext.BeginTransactionAsync())
+            using (var transaction = _DbContext.BeginTransaction())
             {
                 try
                 {
-                    action();
-                    await SaveChangesAsync();
-                    await transaction.CommitAsync();
+                    var result = action();
+                    SaveChangesSync();
+                    transaction.Commit();
 
+                    return result;
                 }
                 catch
                 {
-                    await transaction.RollbackAsync();
+                    transaction.Rollback();
                     throw;
                 }
             }
         }
 
-        private void BeginTransactionSync(Action action)
+        public void BeginTransactionSync(Action action)
         {
             using (var transaction = _DbContext.BeginTransaction())
             {
